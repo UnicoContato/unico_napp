@@ -1,0 +1,7 @@
+sudo docker-compose up -d --build
+sudo docker exec -it integrador-api-api-1 bash
+sudo alembic upgrade head
+
+
+Logs:
+docker logs integrador-api-api-1

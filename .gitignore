@@ -1,0 +1,55 @@
+# Ambiente Python
+venv/
+.env
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Flask
+instance/
+.webassets-cache
+
+# Testes
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Banco / arquivos locais
+*.sqlite3
+
+# Logs
+*.log
+
+# Docker
+docker-compose.override.yml
+
+# Alembic (manter migrations, ignorar cache)
+migrations/__pycache__/
+migrations/versions/*.pyc
+
+# IDEs / Editores
+.vscode/
+.idea/
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Secrets
+.env.*
+*.pem
+*.key
+
+# Arquivos temporários
+*.swp
+*.swo
+*~
+
+# Build
+dist/
+build/
+*.egg-info/
+
+# Cache geral
+.cache/
