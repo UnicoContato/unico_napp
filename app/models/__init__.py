@@ -1,6 +1,7 @@
+from app.extensions import db
+from app.config import Config
 from flask import Flask
-from .extensions import db
-from .config import Config
+
 
 def create_app():
     app = Flask(__name__)
