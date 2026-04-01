@@ -27,6 +27,6 @@ class ProductService:
                 attributes_keys = {key: None for key in list(item["atributos"].keys())}
                 for attribute_key in attributes_keys:
                     attribute = Atributo.query.filter_by(nome=attribute_key).first()
-
+                    
 
 
