@@ -16,6 +16,13 @@ Centralizar e padronizar a comunicação entre sistemas parceiros, garantindo:
 - Possibilidade de envio de webhooks
 
 
+## Documentação
+
+- Documentação funcional e técnica editável: `API_DOCUMENTATION.md`
+- Especificação OpenAPI: `openapi.yaml`
+- Coleção Postman: `UnicoNapp.postman_collection.json`
+
+
 ## Arquitetura
 
 - API REST em Flask

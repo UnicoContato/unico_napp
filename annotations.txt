@@ -9,3 +9,9 @@ sudo docker-compose up -d --build
 
 Logs:
 sudo docker logs unico_napp-api-1
+
+
+A entidade de produtos é separada do order.
+A entidade Order é responsável por dizer o preço e o estoque de determinado produto para um determinado seller.
+É possível atualizar o preço e estoque e também as imagens, portanto na exibição em qualquer marketplace, é necessário que a busca por essas informações sejam atualizadas em tempo real, pois podem ser alteradas a qualquer momento.
+A entidade Order Status, representa o status de compra de um produto de um seller. Todas as vezes que o Order Status é adicionado é enviado um evento webhook para o link cadastrado do seller.
