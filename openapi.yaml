@@ -1,0 +1,1224 @@
+openapi: 3.0.3
+info:
+  title: Unico Napp API
+  version: 1.0.0
+  description: |
+    Documentação OpenAPI da API Unico Napp.
+    Cada recurso contém explicações e exemplos de requisição/ resposta.
+servers:
+  - url: http://localhost:5000
+    description: Servidor local de desenvolvimento
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+  schemas:
+    SimpleErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Invalid API key
+    ErrorItem:
+      type: object
+      properties:
+        codigo_erro:
+          type: integer
+          example: 1001
+        descricao:
+          type: string
+          example: username - Possui valor inesperado ou vazio
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorItem'
+  responses:
+    AdminKeyRequired:
+      description: Admin key is missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SimpleErrorResponse'
+          example:
+            error: Admin key required for registration
+    UsernameRequired:
+      description: Username is required
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SimpleErrorResponse'
+          example:
+            error: username required
+    UsernameExists:
+      description: Username already exists
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SimpleErrorResponse'
+          example:
+            error: username exists
+    ApiKeyRequired:
+      description: API key header is required
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SimpleErrorResponse'
+          example:
+            error: API key required
+    InvalidApiKey:
+      description: API key is invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SimpleErrorResponse'
+          example:
+            error: Invalid API key
+    ValidationError:
+      description: Payload validation failed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            errors:
+              - codigo_erro: 1001
+                descricao: sku - Possui valor inesperado ou vazio
+    ProductNotFound:
+      description: Product was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            errors:
+              - codigo_erro: 1013
+                descricao: id_produto - produto não encontrado
+    SellerNotFound:
+      description: Seller was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            errors:
+              - codigo_erro: 1014
+                descricao: vendedor não encontrado
+    ImageNotFound:
+      description: Image was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            errors:
+              - codigo_erro: 1022
+                descricao: Recurso não encontrado
+    OrderNotFound:
+      description: Order was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            errors:
+              - codigo_erro: 1022
+                descricao: Recurso não encontrado
+    SellerValidationError:
+      description: Seller validation failed
+      content:
+        application/json:
+          schema:
+            oneOf:
+              - $ref: '#/components/schemas/SimpleErrorResponse'
+              - $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            invalid_cnpj:
+              value:
+                errors:
+                  - codigo_erro: 1006
+                    descricao: CNPJ inválido
+            duplicate_cnpj:
+              value:
+                errors:
+                  - codigo_erro: 1012
+                    descricao: CNPJ já cadastrado
+    WebhookValidationError:
+      description: Webhook URL is missing
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SimpleErrorResponse'
+          example:
+            error: webhook_url is required
+    BulkValidationError:
+      description: Bulk payload validation failed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            errors:
+              - codigo_erro: 1001
+                descricao: itens - Possui valor inesperado ou vazio
+    AuthRegisterRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          example: testuser
+      required:
+        - username
+    AuthRegisterResponse:
+      type: object
+      properties:
+        api_key:
+          type: string
+          example: 5f8d5c6a7b8e9f0a1b2c3d4e5f6a7b8c
+        user_id:
+          type: integer
+          example: 1
+    AuthMeResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        username:
+          type: string
+          example: testuser
+        webhook_url:
+          type: string
+          nullable: true
+          example: https://example.com/webhook
+    WebhookConfigRequest:
+      type: object
+      properties:
+        webhook_url:
+          type: string
+          example: https://example.com/order-status
+      required:
+        - webhook_url
+    WebhookConfigResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: webhook_url set
+        webhook_url:
+          type: string
+          example: https://example.com/order-status
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        sku:
+          type: string
+          example: SKU123
+        ean:
+          type: string
+          example: 789000000001
+        nome:
+          type: string
+          example: Tênis Esportivo Preto
+        marca:
+          type: string
+          example: Nike
+        descricao:
+          type: string
+          example: Tênis confortável para corrida
+        status:
+          type: string
+          example: active
+        preco:
+          type: number
+          format: float
+          example: 299.90
+        estoque:
+          type: integer
+          example: 15
+    ProductCreateRequest:
+      type: object
+      properties:
+        sku:
+          type: string
+          example: SKU123
+        ean:
+          type: string
+          example: 789000000001
+        nome:
+          type: string
+          example: Tênis Esportivo Preto
+        marca:
+          type: string
+          example: Nike
+        descricao:
+          type: string
+          example: Tênis confortável para corrida
+        status:
+          type: string
+          example: active
+        preco:
+          type: number
+          format: float
+          example: 299.90
+        estoque:
+          type: integer
+          example: 15
+      required:
+        - sku
+        - ean
+        - nome
+        - marca
+        - descricao
+        - status
+        - preco
+        - estoque
+    Order:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        id_seller_contato:
+          type: integer
+          example: 1
+        id_produto:
+          type: integer
+          example: 1
+        estoque:
+          type: integer
+          example: 10
+        preco:
+          type: number
+          format: float
+          example: 99.99
+    OrderCreateRequest:
+      type: object
+      properties:
+        id_seller_contato:
+          type: integer
+          example: 1
+        id_produto:
+          type: integer
+          example: 1
+        estoque:
+          type: integer
+          example: 10
+        preco:
+          type: number
+          format: float
+          example: 99.99
+      required:
+        - id_seller_contato
+        - id_produto
+        - estoque
+        - preco
+    OrderStatus:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        id_order:
+          type: integer
+          example: 1
+        quantidade:
+          type: integer
+          example: 5
+        status:
+          type: string
+          example: processing
+    OrderStatusCreateRequest:
+      type: object
+      properties:
+        quantidade:
+          type: integer
+          example: 5
+        status:
+          type: string
+          example: processing
+      required:
+        - quantidade
+        - status
+    Image:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        id_produto:
+          type: integer
+          example: 1
+        link:
+          type: string
+          example: https://example.com/image.jpg
+        ordem:
+          type: integer
+          example: 1
+    ImageCreateRequest:
+      type: object
+      properties:
+        id_produto:
+          type: integer
+          example: 1
+        link:
+          type: string
+          example: https://example.com/image.jpg
+        ordem:
+          type: integer
+          example: 1
+      required:
+        - id_produto
+        - link
+        - ordem
+    Seller:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        cnpj:
+          type: string
+          example: 12345678000123
+        nome:
+          type: string
+          example: João Silva
+    SellerCreateRequest:
+      type: object
+      properties:
+        cnpj:
+          type: string
+          example: 12345678000123
+        nome:
+          type: string
+          example: João Silva
+      required:
+        - cnpj
+paths:
+  /api/v1/auth/register:
+    post:
+      summary: Registrar usuário
+      description: Registra um novo usuário e gera uma API key para uso nas integrações.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRegisterRequest'
+      responses:
+        '201':
+          description: Usuário registrado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthRegisterResponse'
+        '400':
+          $ref: '#/components/responses/UsernameRequired'
+        '403':
+          $ref: '#/components/responses/AdminKeyRequired'
+        '409':
+          $ref: '#/components/responses/UsernameExists'
+  /api/v1/auth/me:
+    get:
+      summary: Informações do usuário
+      description: Retorna informações do usuário autenticado e a URL de webhook configurada.
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Dados do usuário
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthMeResponse'
+        '401':
+          $ref: '#/components/responses/InvalidApiKey'
+  /api/v1/auth/webhook:
+    post:
+      summary: Configurar webhook do usuário
+      description: Salva ou atualiza a URL que receberá eventos de status de pedido.
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookConfigRequest'
+      responses:
+        '200':
+          description: Webhook configurado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookConfigResponse'
+        '400':
+          $ref: '#/components/responses/WebhookValidationError'
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/SimpleErrorResponse'
+              examples:
+                missing_api_key:
+                  value:
+                    error: API key required
+                invalid_api_key:
+                  value:
+                    error: Invalid API key
+  /api/v1/produtos:
+    post:
+      summary: Criar produto
+      description: Cria um novo produto no catálogo.
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductCreateRequest'
+      responses:
+        '201':
+          description: Produto criado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  message:
+                    type: string
+                    example: created
+        '400':
+          $ref: '#/components/responses/ValidationError'
+    get:
+      summary: Listar produtos
+      description: Retorna uma lista de produtos com suporte a paginação e filtros por SKU ou status.
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: sku
+          in: query
+          schema:
+            type: string
+          description: Filtrar produto por SKU
+        - name: status
+          in: query
+          schema:
+            type: string
+          description: Filtrar produto por status
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+          description: Offset da página
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+          description: Limite de itens retornados
+      responses:
+        '200':
+          description: Lista de produtos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+  /api/v1/produtos/{id}:
+    get:
+      summary: Consultar produto por ID
+      description: Retorna os dados completos do produto, incluindo imagens e atributos.
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Produto encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          $ref: '#/components/responses/ProductNotFound'
+    put:
+      summary: Atualizar produto
+      description: Substitui todos os campos do produto especificado.
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductCreateRequest'
+      responses:
+        '200':
+          description: Produto atualizado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: updated
+        '400':
+          $ref: '#/components/responses/ValidationError'
+        '404':
+          $ref: '#/components/responses/ProductNotFound'
+    patch:
+      summary: Atualizar parcialmente produto
+      description: Atualiza apenas os campos fornecidos no produto.
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Produto atualizado parcialmente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: updated
+        '404':
+          $ref: '#/components/responses/ProductNotFound'
+  /api/v1/orders:
+    get:
+      summary: Listar pedidos
+      description: Retorna todos os pedidos com paginação.
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: Lista de pedidos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+    post:
+      summary: Criar pedido
+      description: Cria um pedido associado a um produto e vendedor.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderCreateRequest'
+      responses:
+        '201':
+          description: Pedido criado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  message:
+                    type: string
+                    example: created
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                validation_error:
+                  value:
+                    errors:
+                      - codigo_erro: 1001
+                        descricao: id_seller_contato - Possui valor inesperado ou vazio
+                product_not_found:
+                  value:
+                    errors:
+                      - codigo_erro: 1013
+                        descricao: id_produto - produto não encontrado
+  /api/v1/orders/{id}:
+    get:
+      summary: Consultar pedido por ID
+      description: Retorna os detalhes de um pedido único.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Pedido encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '404':
+          $ref: '#/components/responses/OrderNotFound'
+    put:
+      summary: Atualizar pedido
+      description: Substitui todos os dados do pedido especificado.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderCreateRequest'
+      responses:
+        '200':
+          description: Pedido atualizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: updated
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                validation_error:
+                  value:
+                    errors:
+                      - codigo_erro: 1001
+                        descricao: preco - Possui valor inesperado ou vazio
+                product_not_found:
+                  value:
+                    errors:
+                      - codigo_erro: 1013
+                        descricao: id_produto - produto não encontrado
+        '404':
+          $ref: '#/components/responses/OrderNotFound'
+    patch:
+      summary: Atualizar parcialmente pedido
+      description: Atualiza somente campos fornecidos no pedido.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Pedido atualizado parcialmente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: updated
+        '400':
+          $ref: '#/components/responses/ProductNotFound'
+        '404':
+          $ref: '#/components/responses/OrderNotFound'
+  /api/v1/orders/seller/{seller_id}:
+    get:
+      summary: Pedidos por vendedor
+      description: Retorna todos os pedidos associados a um vendedor.
+      parameters:
+        - name: seller_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Pedidos do vendedor
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+  /api/v1/orders/produto/{produto_id}:
+    get:
+      summary: Pedidos por produto
+      description: Retorna pedidos associados a um produto.
+      parameters:
+        - name: produto_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Pedidos do produto
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+  /api/v1/orders/{id}/status:
+    get:
+      summary: Listar status de pedido
+      description: Mostra todos os status registrados para um pedido.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lista de status do pedido
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OrderStatus'
+    post:
+      summary: Criar status de pedido
+      description: Registra um novo status para um pedido e dispara webhook se configurado.
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderStatusCreateRequest'
+      responses:
+        '200':
+          description: Status criado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: created
+                  id:
+                    type: integer
+                    example: 1
+        '400':
+          $ref: '#/components/responses/ValidationError'
+    put:
+      summary: Atualizar status de pedido
+      description: Atualiza um status existente de pedido e dispara webhook de atualização.
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderStatusCreateRequest'
+      responses:
+        '200':
+          description: Status atualizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: updated
+        '404':
+          $ref: '#/components/responses/OrderNotFound'
+  /api/v1/imagens:
+    get:
+      summary: Listar imagens
+      description: Lista imagens de produtos com paginação e filtro opcional por produto.
+      parameters:
+        - name: produto_id
+          in: query
+          schema:
+            type: integer
+          description: ID do produto para filtrar imagens
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: Lista de imagens
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Image'
+    post:
+      summary: Criar imagem
+      description: Adiciona uma imagem a um produto existente.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImageCreateRequest'
+      responses:
+        '201':
+          description: Imagem criada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  message:
+                    type: string
+                    example: created
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                validation_error:
+                  value:
+                    errors:
+                      - codigo_erro: 1001
+                        descricao: link - Possui valor inesperado ou vazio
+                product_not_found:
+                  value:
+                    errors:
+                      - codigo_erro: 1013
+                        descricao: id_produto - produto não encontrado
+  /api/v1/imagens/{id}:
+    get:
+      summary: Consultar imagem por ID
+      description: Retorna os dados de uma imagem pelo seu identificador.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Imagem encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Image'
+        '404':
+          $ref: '#/components/responses/ImageNotFound'
+    put:
+      summary: Atualizar imagem
+      description: Substitui todos os dados de uma imagem existente.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImageCreateRequest'
+      responses:
+        '200':
+          description: Imagem atualizada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: updated
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                validation_error:
+                  value:
+                    errors:
+                      - codigo_erro: 1001
+                        descricao: ordem - Possui valor inesperado ou vazio
+                product_not_found:
+                  value:
+                    errors:
+                      - codigo_erro: 1013
+                        descricao: id_produto - produto não encontrado
+        '404':
+          $ref: '#/components/responses/ImageNotFound'
+    patch:
+      summary: Atualizar parcialmente imagem
+      description: Atualiza apenas os campos fornecidos da imagem.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Imagem atualizada parcialmente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: updated
+        '400':
+          $ref: '#/components/responses/ProductNotFound'
+        '404':
+          $ref: '#/components/responses/ImageNotFound'
+  /api/v1/imagens/produto/{produto_id}:
+    get:
+      summary: Listar imagens por produto
+      description: Retorna todas as imagens vinculadas a um produto específico.
+      parameters:
+        - name: produto_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lista de imagens do produto
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Image'
+  /api/v1/sellers:
+    get:
+      summary: Listar vendedores
+      description: Retorna fornecedores cadastrados com paginação.
+      parameters:
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: Lista de vendedores
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Seller'
+    post:
+      summary: Criar vendedor
+      description: Cadastra um novo vendedor utilizando CNPJ válido.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SellerCreateRequest'
+      responses:
+        '201':
+          description: Vendedor criado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  cnpj:
+                    type: string
+                    example: 12345678000123
+                  nome:
+                    type: string
+                    example: João Silva
+                  message:
+                    type: string
+                    example: created
+        '400':
+          $ref: '#/components/responses/SellerValidationError'
+        '409':
+          description: Seller already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errors:
+                  - codigo_erro: 1012
+                    descricao: CNPJ já cadastrado
+  /api/v1/sellers/{id}:
+    get:
+      summary: Consultar vendedor por ID
+      description: Retorna os dados de um vendedor específico.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Vendedor encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Seller'
+        '404':
+          $ref: '#/components/responses/SellerNotFound'
+  /api/v1/integration/products/bulk:
+    post:
+      summary: Importação em massa
+      description: Importa um lote de itens com produtos, imagens, pedidos e atributos.
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                vendedor_id:
+                  type: integer
+                  example: 1
+                itens:
+                  type: array
+                  items:
+                    type: object
+      responses:
+        '200':
+          description: Relatório de importação bem-sucedida
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  products:
+                    type: object
+                    properties:
+                      inserted:
+                        type: integer
+                        example: 1
+                      existing:
+                        type: integer
+                        example: 0
+                  images:
+                    type: object
+                    properties:
+                      inserted:
+                        type: integer
+                        example: 1
+                      existing:
+                        type: integer
+                        example: 0
+                  orders:
+                    type: object
+                    properties:
+                      inserted:
+                        type: integer
+                        example: 1
+                      existing:
+                        type: integer
+                        example: 0
+                  attributes:
+                    type: object
+                    properties:
+                      inserted:
+                        type: integer
+                        example: 2
+                      existing:
+                        type: integer
+                        example: 0
+        '400':
+          $ref: '#/components/responses/BulkValidationError'
+  /health:
+    get:
+      summary: Checagem de saúde
+      description: Verifica se a API está disponível.
+      responses:
+        '200':
+          description: API está funcionando
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok

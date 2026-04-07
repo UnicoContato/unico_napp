@@ -8,8 +8,6 @@ done
 
 echo "✅ Banco pronto!"
 
-echo "🚀 Rodando migrations..."
-alembic upgrade head
+echo "📦 Criando tabelas..."
 
-echo "🔥 Subindo API..."
 python run.py

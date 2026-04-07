@@ -1,0 +1,698 @@
+{
+  "info": {
+    "name": "Unico Napp API Collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Coleção Postman para a API Unico Napp. Inclui exemplos de requisições e respostas para cada recurso, com descrições em português."
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "api_key",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "admin_key",
+      "value": "my_secure_admin_key_12345",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "authentication",
+      "item": [
+        {
+          "name": "register_user",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Admin-Key",
+                "value": "{{admin_key}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"testuser\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "get_user_info",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/me",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "auth", "me"]
+            }
+          }
+        },
+        {
+          "name": "set_webhook_url",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"webhook_url\": \"https://example.com/order-status\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/webhook",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "auth", "webhook"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "products",
+      "item": [
+        {
+          "name": "create_product",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sku\": \"SKU123\",\n  \"ean\": \"789000000001\",\n  \"nome\": \"Tênis Esportivo Preto\",\n  \"marca\": \"Nike\",\n  \"descricao\": \"Tênis confortável para corrida\",\n  \"status\": \"active\",\n  \"preco\": 299.90,\n  \"estoque\": 15\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/produtos",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "produtos"]
+            }
+          }
+        },
+        {
+          "name": "list_products",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/produtos?offset=0&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "produtos"],
+              "query": [
+                {
+                  "key": "offset",
+                  "value": "0"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "query_products_by_sku",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/produtos?sku=SKU123",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "produtos"],
+              "query": [
+                {
+                  "key": "sku",
+                  "value": "SKU123"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "get_product_by_id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/produtos/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "produtos", "1"]
+            }
+          }
+        },
+        {
+          "name": "get_product_by_sku",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/produtos/sku/SKU123",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "produtos", "sku", "SKU123"]
+            }
+          }
+        },
+        {
+          "name": "update_product_put",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ean\": \"789000000001\",\n  \"sku\": \"SKU123\",\n  \"nome\": \"Updated Name\",\n  \"marca\": \"Updated Brand\",\n  \"descricao\": \"Updated Description\",\n  \"status\": \"inactive\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/produtos/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "produtos", "1"]
+            }
+          }
+        },
+        {
+          "name": "update_product_patch",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"active\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/produtos/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "produtos", "1"]
+            }
+          }
+        },
+        {
+          "name": "delete_product",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/produtos/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "produtos", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "orders",
+      "item": [
+        {
+          "name": "list_orders",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/orders?offset=0&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "orders"],
+              "query": [
+                {
+                  "key": "offset",
+                  "value": "0"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "create_order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_seller_contato\": 1,\n  \"id_produto\": 1,\n  \"estoque\": 10,\n  \"preco\": 99.99\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/orders",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "orders"]
+            }
+          }
+        },
+        {
+          "name": "get_order_by_id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/orders/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "orders", "1"]
+            }
+          }
+        },
+        {
+          "name": "update_order_put",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_seller_contato\": 1,\n  \"id_produto\": 1,\n  \"estoque\": 3,\n  \"preco\": 120.00\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/orders/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "orders", "1"]
+            }
+          }
+        },
+        {
+          "name": "update_order_patch",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"preco\": 109.99\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/orders/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "orders", "1"]
+            }
+          }
+        },
+        {
+          "name": "get_orders_by_seller",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/orders/seller/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "orders", "seller", "1"]
+            }
+          }
+        },
+        {
+          "name": "get_orders_by_product",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/orders/produto/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "orders", "produto", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "order_status",
+      "item": [
+        {
+          "name": "get_order_status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/orders/1/status",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "orders", "1", "status"]
+            }
+          }
+        },
+        {
+          "name": "create_order_status",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantidade\": 5,\n  \"status\": \"processing\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/orders/1/status",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "orders", "1", "status"]
+            }
+          }
+        },
+        {
+          "name": "update_order_status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantidade\": 7,\n  \"status\": \"shipped\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/orders/1/status",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "orders", "1", "status"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "images",
+      "item": [
+        {
+          "name": "list_images",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/imagens?offset=0&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "imagens"],
+              "query": [
+                {
+                  "key": "offset",
+                  "value": "0"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "create_image",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_produto\": 1,\n  \"link\": \"https://example.com/image.jpg\",\n  \"ordem\": 1\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/imagens",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "imagens"]
+            }
+          }
+        },
+        {
+          "name": "get_image_by_id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/imagens/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "imagens", "1"]
+            }
+          }
+        },
+        {
+          "name": "get_images_by_product",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/imagens/produto/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "imagens", "produto", "1"]
+            }
+          }
+        },
+        {
+          "name": "update_image_put",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_produto\": 1,\n  \"link\": \"https://example.com/updated-image.jpg\",\n  \"ordem\": 2\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/imagens/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "imagens", "1"]
+            }
+          }
+        },
+        {
+          "name": "update_image_patch",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ordem\": 3\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/imagens/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "imagens", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "sellers",
+      "item": [
+        {
+          "name": "list_sellers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/sellers?offset=0&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "sellers"],
+              "query": [
+                {
+                  "key": "offset",
+                  "value": "0"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "create_seller",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cnpj\": \"12345678000123\",\n  \"nome\": \"João Silva\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/sellers",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "sellers"]
+            }
+          }
+        },
+        {
+          "name": "get_seller",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/sellers/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "sellers", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "bulk_integration",
+      "item": [
+        {
+          "name": "bulk_product_import",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-API-Key",
+                "value": "{{api_key}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"vendedor_id\": 1,\n  \"itens\": [\n    {\n      \"sku\": \"SKU123\",\n      \"ean\": \"789000000001\",\n      \"nome\": \"Tênis Esportivo Preto\",\n      \"marca\": \"Nike\",\n      \"descricao\": \"Tênis confortável para corrida\",\n      \"status\": \"active\",\n      \"preco\": 299.90,\n      \"estoque\": 15,\n      \"imagens\": [\n        {\n          \"link\": \"https://example.com/img1.jpg\",\n          \"ordem\": 1\n        }\n      ],\n      \"orders\": [\n        {\n          \"id_seller_contato\": 1,\n          \"estoque\": 10,\n          \"preco\": 299.90\n        }\n      ],\n      \"atributos\": {\n        \"Cor\": \"Preto\",\n        \"Tamanho\": \"42\"\n      }\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/integration/products/bulk",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "integration", "products", "bulk"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "health",
+      "item": [
+        {
+          "name": "health_check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["health"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
